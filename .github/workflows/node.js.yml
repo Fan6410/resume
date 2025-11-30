@@ -1,0 +1,35 @@
+# .github/workflows/deploy.yml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # 当代码推送到 main 分支时触发此工作流
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # 使用适合您项目的 Node.js 版本
+
+      - name: Install dependencies
+        run: npm install # 或者 yarn install
+
+      - name: Build project
+        run: npm run build # 或者 yarn build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3 # 这是一个常用的部署到 gh-pages 分支的 Action
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist # 指定要部署的文件夹是 build 步骤生成的 dist 目录
+          # 如果您的 GitHub Pages 是用户或组织页面 (例如 username.github.io)，可以不指定 publish_branch
+          # 如果是项目页面 (例如 username.github.io/repo-name)，通常会部署到 gh-pages 分支
+          publish_branch: gh-pages # 指定部署到 gh-pages 分支
